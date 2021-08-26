@@ -8,3 +8,4 @@ Resources that I have found handy
 - [Bash keyboard shortcuts](https://gist.github.com/tuxfight3r/60051ac67c5f0445efee)
 - [AWS EC2 comparison](https://instances.vantage.sh/)
 - [AWS Toolbox](https://github.com/dannysteenman/aws-toolbox)
+- [Automate All The Boring Things with Python](https://automatetheboringstuff.com/)
