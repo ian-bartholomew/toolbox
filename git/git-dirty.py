@@ -12,17 +12,43 @@ BOLD = '\033[1m'
 RESET = '\033[0m'
 
 # Get the parent folder from the command line arguments
-parent_folder = sys.argv[1]
+import sys
 
-# Get the default branch for this Git repository
-default_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'refs/remotes/origin/HEAD']).decode('utf-8').strip().replace('origin/', '')
+def get_default_branch():
+    # Run "git remote show origin" command to get information about the remote repository
+    command = "git remote show origin"
+    output = subprocess.check_output(command.split()).decode()
+
+    # Parse the output to extract the default branch name
+    for line in output.splitlines():
+        if line.strip().startswith("HEAD branch:"):
+            return line.strip().split(":")[1].strip()
+
+    # Return None if the default branch is not found
+    return None
+
+if len(sys.argv) < 2:
+    print("Please provide a folder name")
+    exit()
+
+parent_folder = sys.argv[1]
 
 # Get a list of all child folders in the parent folder
 child_folders = [f.path for f in os.scandir(parent_folder) if f.is_dir()]
 
 # Loop through each child folder and check for Git branches
 for folder in child_folders:
+    # Change to the folder
     os.chdir(folder)
+
+    # Check that this is a Git repository, and continue the loop if not
+    try:
+        subprocess.check_call(['git', 'rev-parse'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError:
+        continue
+
+    # Get the default branch for this Git repository
+    default_branch = get_default_branch()
 
     # Check if this folder is a Git repository
     try:
